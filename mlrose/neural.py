@@ -71,7 +71,7 @@ def unflatten_weights(flat_weights, node_list):
 
 
 def gradient_descent(problem, max_attempts=10, max_iters=np.inf,
-                     init_state=None):
+                     init_state=None, curve = True):
     """Use gradient_descent to find the optimal neural network weights.
 
     Parameters
@@ -117,6 +117,9 @@ def gradient_descent(problem, max_attempts=10, max_iters=np.inf,
     attempts = 0
     iters = 0
 
+    if curve:
+        fitness_curve = np.array([])
+
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state()
 
@@ -138,9 +141,14 @@ def gradient_descent(problem, max_attempts=10, max_iters=np.inf,
             best_fitness = problem.get_maximize()*next_fitness
             best_state = next_state
 
-        problem.set_state(next_state)
+        if curve:
+            fitness_curve = np.append(fitness_curve, problem.get_fitness())
 
-    return best_state, best_fitness
+    best_fitness = problem.get_maximize() * best_fitness
+    if curve:
+        return best_state, best_fitness, fitness_curve
+    else:
+        return best_state, best_fitness
 
 
 class NetworkWeights:
@@ -485,6 +493,7 @@ class NeuralNetwork:
         self.loss = np.inf
         self.output_activation = None
         self.predicted_probs = []
+        self.fitness_curve = []
 
     def fit(self, X, y, init_weights=None):
         """Fit neural network to data.
@@ -540,38 +549,39 @@ class NeuralNetwork:
             if init_weights is None:
                 init_weights = np.random.uniform(-1, 1, num_nodes)
 
-            fitted_weights, loss = random_hill_climb(
+            fitted_weights, loss, fitness_curve = random_hill_climb(
                 problem,
                 max_attempts=self.max_attempts, max_iters=self.max_iters,
-                restarts=0, init_state=init_weights)
+                restarts=0, init_state=init_weights, curve=True)
 
         elif self.algorithm == 'simulated_annealing':
             if init_weights is None:
                 init_weights = np.random.uniform(-1, 1, num_nodes)
-            fitted_weights, loss = simulated_annealing(
+            fitted_weights, loss, fitness_curve = simulated_annealing(
                 problem,
                 schedule=self.schedule, max_attempts=self.max_attempts,
-                max_iters=self.max_iters, init_state=init_weights)
+                max_iters=self.max_iters, init_state=init_weights, curve=True)
 
         elif self.algorithm == 'genetic_alg':
-            fitted_weights, loss = genetic_alg(
+            fitted_weights, loss, fitness_curve = genetic_alg(
                 problem,
                 pop_size=self.pop_size, mutation_prob=self.mutation_prob,
-                max_attempts=self.max_attempts, max_iters=self.max_iters)
+                max_attempts=self.max_attempts, max_iters=self.max_iters, curve=True)
 
         else:  # Gradient descent case
             if init_weights is None:
                 init_weights = np.random.uniform(-1, 1, num_nodes)
-            fitted_weights, loss = gradient_descent(
+            fitted_weights, loss, fitness_curve = gradient_descent(
                 problem,
                 max_attempts=self.max_attempts, max_iters=self.max_iters,
-                init_state=init_weights)
+                init_state=init_weights, curve=True)
 
         # Save fitted weights and node list
         self.node_list = node_list
         self.fitted_weights = fitted_weights
         self.loss = loss
         self.output_activation = fitness.get_output_activation()
+        self.fitness_curve = fitness_curve
 
     def predict(self, X):
         """Use model to predict data labels for given feature array.

@@ -8,7 +8,7 @@ import numpy as np
 from .decay import GeomDecay
 
 
-def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=False):
+def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=True):
     """Use standard hill climbing to find the optimum for a given
     optimization problem.
 
@@ -102,7 +102,7 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Fal
 
 
 def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
-                      init_state=None, curve=False):
+                      init_state=None, curve=True):
     """Use randomized hill climbing to find the optimum for a given
     optimization problem.
 
@@ -206,7 +206,7 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
 
 def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
-                        max_iters=np.inf, init_state=None, curve=False):
+                        max_iters=np.inf, init_state=None, curve=True):
     """Use simulated annealing to find the optimum for a given
     optimization problem.
 
@@ -292,7 +292,7 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
 
             else:
                 attempts += 1
-            
+
         if curve:
             fitness_curve = np.append(fitness_curve, problem.get_fitness())
 
@@ -306,7 +306,7 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
 
 
 def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
-                max_iters=np.inf, curve=False):
+                max_iters=np.inf, curve=True):
     """Use a standard genetic algorithm to find the optimum for a given
     optimization problem.
 
@@ -424,7 +424,7 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
 
 
 def mimic(problem, pop_size=200, keep_pct=0.2, max_attempts=10,
-          max_iters=np.inf, curve=False):
+          max_iters=np.inf, curve=True):
     """Use MIMIC to find the optimum for a given optimization problem.
 
     Parameters
