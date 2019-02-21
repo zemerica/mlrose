@@ -185,8 +185,8 @@ class NetworkWeights:
                  is_classifier=True, val = [None, None], learning_rate=0.1):
 
 
-        X_val = val[0]
-        y_val = val[1]
+        self.X_val = val[0]
+        self.y_val = val[1]
 
         # Make sure y is an array and not a list
         y = np.array(y)
