@@ -543,7 +543,7 @@ class NeuralNetwork:
         self.fitness_curve = []
         self.validation_curve = []
 
-    def fit(self, X, y, val = [None, None], init_weights=None):
+    def fit(self, X, y, val, init_weights=None):
         """Fit neural network to data.
 
         Parameters
