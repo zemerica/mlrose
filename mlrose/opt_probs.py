@@ -98,6 +98,8 @@ class OptProb:
 
         fitness = self.maximize*self.fitness_fn.evaluate(state)
 
+        return fitness
+
     def eval_validation(self, state):
         """Evaluate the fitness of a state vector.
 
