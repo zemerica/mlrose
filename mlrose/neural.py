@@ -652,6 +652,7 @@ class NeuralNetwork:
                 max_attempts=self.max_attempts, max_iters=self.max_iters,
                 init_state=init_weights, curve=True)
 
+
         # Save fitted weights and node list
         self.node_list = node_list
         self.fitted_weights = fitted_weights

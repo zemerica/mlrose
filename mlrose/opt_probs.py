@@ -98,8 +98,6 @@ class OptProb:
 
         fitness = self.maximize*self.fitness_fn.evaluate(state)
 
-        return fitness
-
     def eval_validation(self, state):
         """Evaluate the fitness of a state vector.
 
@@ -116,9 +114,9 @@ class OptProb:
         if len(state) != self.length:
             raise Exception("state length must match problem length")
 
-        validation = self.maximize*self.fitness_fn.evaluate()
+        validation_fitness = self.maximize * self.fitness_fn.evaluate_validation(state)
 
-        return validation
+        return validation_fitness
 
     def eval_mate_probs(self):
         """
