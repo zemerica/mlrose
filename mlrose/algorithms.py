@@ -184,8 +184,6 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
             # Find random neighbor and evaluate fitness
             next_state = problem.random_neighbor()
-            problem.eval_validation(next_state)
-
             next_fitness = problem.eval_fitness(next_state)
 
             # If best neighbor is an improvement,
@@ -199,7 +197,8 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
             if curve:
                 fitness_curve = np.append(fitness_curve, problem.get_fitness())
-                validation_curve = np.append(validation_curve, problem.get_validation())
+                validation_fitness = problem.eval_validation()
+                validation_curve = np.append(validation_curve, validation_fitness)
 
         # Update best state and best fitness
         if problem.get_fitness() > best_fitness:
