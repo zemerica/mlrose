@@ -308,7 +308,8 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
 
         if curve:
             fitness_curve = np.append(fitness_curve, problem.get_fitness())
-            validation_curve = np.append(validation_curve, problem.get_validation())
+            validation_fitness = problem.eval_validation(next_state)
+            validation_curve = np.append(validation_curve, validation_fitness)
 
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state()
@@ -381,7 +382,7 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
 
     if curve:
         fitness_curve = []
-        validation_curve = []
+        validation_curve = np.array([])
 
     # Initialize problem, population and attempts counter
     problem.reset()
@@ -429,14 +430,15 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
 
         if curve:
             fitness_curve.append(problem.get_pop_fitness())
-            validation_curve.append(problem.get_validation())
+            validation_fitness = problem.eval_validation(next_state)
+            validation_curve = np.append(validation_curve, validation_fitness)
 
 
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state()
 
     if curve:
-        return best_state, best_fitness, np.asarray(fitness_curve), np.asarray(validation_curve)
+        return best_state, best_fitness, np.asarray(fitness_curve), validation_curve
     else:
         return best_state, best_fitness
 
@@ -508,7 +510,7 @@ def mimic(problem, pop_size=200, keep_pct=0.2, max_attempts=10,
 
     if curve:
         fitness_curve = []
-        validation_curve = []
+        validation_curve = np.array([])
 
     # Initialize problem, population and attempts counter
     problem.reset()
@@ -547,13 +549,14 @@ def mimic(problem, pop_size=200, keep_pct=0.2, max_attempts=10,
 
         if curve:
             fitness_curve.append(problem.get_pop_fitness())
-            validation_curve.append(problem.get_validation())
+            validation_fitness = problem.eval_validation(next_state)
+            validation_curve = np.append(validation_curve, validation_fitness)
 
 
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state().astype(int)
 
     if curve:
-        return best_state, best_fitness, np.asarray(fitness_curve), np.asarray(validation_curve)
+        return best_state, best_fitness, np.asarray(fitness_curve), validation_curve
     else:
         return best_state, best_fitness
