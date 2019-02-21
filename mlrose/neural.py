@@ -615,7 +615,7 @@ class NeuralNetwork:
 
         # Initialize optimization problem
         fitness = NetworkWeights(X, y, node_list, self.activation, self.bias,
-                                 self.is_classifier, val=(X_val, y_val), learning_rate=self.lr)
+                                 self.is_classifier, val=(None, None), learning_rate=self.lr)
 
         problem = ContinuousOpt(num_nodes, fitness, maximize=False,
                                 min_val=-1*self.clip_max,

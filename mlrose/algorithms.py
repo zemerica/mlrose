@@ -184,9 +184,9 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
             # Find random neighbor and evaluate fitness
             next_state = problem.random_neighbor()
-            next_fitness = problem.eval_fitness(next_state)
-
             problem.eval_validation(next_state)
+
+            next_fitness = problem.eval_fitness(next_state)
 
             # If best neighbor is an improvement,
             # move to that state and reset attempts counter
