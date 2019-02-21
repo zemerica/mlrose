@@ -116,7 +116,7 @@ class OptProb:
         if len(state) != self.length:
             raise Exception("state length must match problem length")
 
-        fitness = self.maximize*self.fitness_fn.evaluate()
+        validation = self.maximize*self.fitness_fn.evaluate()
 
         return validation
 
