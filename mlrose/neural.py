@@ -182,7 +182,7 @@ class NetworkWeights:
     """
 
     def __init__(self, X, y, node_list, activation, bias=True,
-                 is_classifier=True, val = None, learning_rate=0.1):
+                 is_classifier=True, val = (None, None), learning_rate=0.1):
 
         X_val, y_val = val
 
