@@ -24,7 +24,7 @@ class OptProb:
         Set :code:`False` for minimization problem.
     """
 
-    def __init__(self, length, fitness_fn, maximize=True):
+    def __init__(self, length, fitness_fn, val = None, maximize=True):
 
         if length < 0:
             raise Exception("""length must be a positive integer.""")
@@ -43,6 +43,7 @@ class OptProb:
         self.population = []
         self.pop_fitness = []
         self.mate_probs = []
+        self.validation = 0
 
         if maximize:
             self.maximize = 1.0
@@ -99,6 +100,26 @@ class OptProb:
 
         return fitness
 
+    def eval_validation(self, state):
+        """Evaluate the fitness of a state vector.
+
+        Parameters
+        ----------
+        state: array
+            State vector for evaluation.
+
+        Returns
+        -------
+        fitness: float
+            Value of fitness function.
+        """
+        if len(state) != self.length:
+            raise Exception("state length must match problem length")
+
+        fitness = self.maximize*self.fitness_fn.evaluate()
+
+        return validation
+
     def eval_mate_probs(self):
         """
         Calculate the probability of each member of the population reproducing.
@@ -124,6 +145,10 @@ class OptProb:
             Fitness value of current state vector.
         """
         return self.fitness
+
+    def get_validation(self):
+
+        return self.validation
 
     def get_length(self):
         """ Return the state vector length.

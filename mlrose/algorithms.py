@@ -30,6 +30,7 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Tru
         If :code:`False`, then no curve is stored.
         If :code:`True`, then a history of fitness values is provided as a third return value.
 
+
     Returns
     -------
     best_state: array
@@ -61,6 +62,7 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Tru
 
     if curve:
         fitness_curve = np.array([])
+        validation_curve = np.array([])
 
 
     for _ in range(restarts + 1):
@@ -80,6 +82,9 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Tru
             next_state = problem.best_neighbor()
             next_fitness = problem.eval_fitness(next_state)
 
+            #evaluate the validation set at this point
+            problem.eval_validation(next_state)
+
             # If best neighbor is an improvement, move to that state
             if next_fitness > problem.get_fitness():
                 problem.set_state(next_state)
@@ -93,10 +98,11 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Tru
             best_state = problem.get_state()
         if curve:
             fitness_curve = np.append(fitness_curve, problem.get_fitness())
+            validation_curve = np.append(validation_curve, problem.get_validation())
 
     best_fitness = problem.get_maximize()*best_fitness
     if curve:
-        return best_state, best_fitness, fitness_curve
+        return best_state, best_fitness, fitness_curve, validation_curve
     else:
         return best_state, best_fitness
 
