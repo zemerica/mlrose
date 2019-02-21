@@ -197,7 +197,7 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
             if curve:
                 fitness_curve = np.append(fitness_curve, problem.get_fitness())
-                validation_fitness = problem.eval_validation()
+                validation_fitness = problem.eval_validation(next_state)
                 validation_curve = np.append(validation_curve, validation_fitness)
 
         # Update best state and best fitness
