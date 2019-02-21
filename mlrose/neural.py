@@ -243,7 +243,7 @@ class NetworkWeights:
         self.y_pred = y
         self.weights = []
         self.prob_type = 'continuous'
-        self.y_val_pred = y_val
+        self.y_val_pred = np.zeros(shape=(self.y_val.shape))
 
         nodes = 0
         for i in range(len(node_list) - 1):
