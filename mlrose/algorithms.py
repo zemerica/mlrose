@@ -167,6 +167,7 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
     if curve:
         fitness_curve = np.array([])
+        validation_curve = np.array([])
 
     for _ in range(restarts + 1):
         # Initialize optimization problem and attempts counter
@@ -185,6 +186,9 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
             next_state = problem.random_neighbor()
             next_fitness = problem.eval_fitness(next_state)
 
+            #evaluate the validation set at this point
+            problem.eval_validation(next_state)
+
             # If best neighbor is an improvement,
             # move to that state and reset attempts counter
             if next_fitness > problem.get_fitness():
@@ -196,6 +200,7 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
 
             if curve:
                 fitness_curve = np.append(fitness_curve, problem.get_fitness())
+                validation_curve = np.append(validation_curve, problem.get_validation())
 
         # Update best state and best fitness
         if problem.get_fitness() > best_fitness:
@@ -206,7 +211,7 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
     best_fitness = problem.get_maximize()*best_fitness
 
     if curve:
-        return best_state, best_fitness, fitness_curve
+        return best_state, best_fitness, fitness_curve, validation_curve
     else:
         return best_state, best_fitness
 
@@ -270,6 +275,7 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
 
     if curve:
         fitness_curve = np.array([])
+        validation_curve = np.array([])
 
     attempts = 0
     iters = 0
@@ -286,6 +292,9 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
             next_state = problem.random_neighbor()
             next_fitness = problem.eval_fitness(next_state)
 
+            #evaluate the validation set at this point
+            problem.eval_validation(next_state)
+
             # Calculate delta E and change prob
             delta_e = next_fitness - problem.get_fitness()
             prob = np.exp(delta_e/temp)
@@ -301,12 +310,13 @@ def simulated_annealing(problem, schedule=GeomDecay(), max_attempts=10,
 
         if curve:
             fitness_curve = np.append(fitness_curve, problem.get_fitness())
+            validation_curve = np.append(validation_curve, problem.get_validation())
 
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state()
 
     if curve:
-        return best_state, best_fitness, fitness_curve
+        return best_state, best_fitness, fitness_curve, validation_curve
     else:
         return best_state, best_fitness
 
@@ -373,7 +383,7 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
 
     if curve:
         fitness_curve = []
-
+        validation_curve = []
 
     # Initialize problem, population and attempts counter
     problem.reset()
@@ -407,6 +417,9 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
         next_state = problem.best_child()
         next_fitness = problem.eval_fitness(next_state)
 
+        # evaluate the validation set at this point
+        problem.eval_validation(next_state)
+
         # If best child is an improvement,
         # move to that state and reset attempts counter
         if next_fitness > problem.get_fitness():
@@ -418,13 +431,14 @@ def genetic_alg(problem, pop_size=200, mutation_prob=0.1, max_attempts=10,
 
         if curve:
             fitness_curve.append(problem.get_pop_fitness())
+            validation_curve.append(problem.get_validation())
 
 
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state()
 
     if curve:
-        return best_state, best_fitness, np.asarray(fitness_curve)
+        return best_state, best_fitness, np.asarray(fitness_curve), np.asarray(validation_curve)
     else:
         return best_state, best_fitness
 
@@ -496,6 +510,7 @@ def mimic(problem, pop_size=200, keep_pct=0.2, max_attempts=10,
 
     if curve:
         fitness_curve = []
+        validation_curve = []
 
     # Initialize problem, population and attempts counter
     problem.reset()
@@ -520,6 +535,9 @@ def mimic(problem, pop_size=200, keep_pct=0.2, max_attempts=10,
 
         next_fitness = problem.eval_fitness(next_state)
 
+        # evaluate the validation set at this point
+        problem.eval_validation(next_state)
+
         # If best child is an improvement,
         # move to that state and reset attempts counter
         if next_fitness > problem.get_fitness():
@@ -531,12 +549,13 @@ def mimic(problem, pop_size=200, keep_pct=0.2, max_attempts=10,
 
         if curve:
             fitness_curve.append(problem.get_pop_fitness())
+            validation_curve.append(problem.get_validation())
 
 
     best_fitness = problem.get_maximize()*problem.get_fitness()
     best_state = problem.get_state().astype(int)
 
     if curve:
-        return best_state, best_fitness, np.asarray(fitness_curve)
+        return best_state, best_fitness, np.asarray(fitness_curve), np.asarray(validation_curve)
     else:
         return best_state, best_fitness
