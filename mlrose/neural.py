@@ -182,25 +182,19 @@ class NetworkWeights:
     """
 
     def __init__(self, X, y, node_list, activation, bias=True,
-                 is_classifier=True, val = (None, None), learning_rate=0.1):
+                 is_classifier=True, val = [None, None], learning_rate=0.1):
 
-        X_val, y_val = val
 
         # Make sure y is an array and not a list
         y = np.array(y)
-        y_val = np.array(y_val)
 
         # Convert y to 2D if necessary
         if len(np.shape(y)) == 1:
             y = np.reshape(y, [len(y), 1])
-            y_val = np.reshape(y_val, [len(y_val), 1])
 
         # Verify X and y are the same length
         if not np.shape(X)[0] == np.shape(y)[0]:
             raise Exception("""The length of X and y must be equal.""")
-
-        #if not np.shape(X_val)[0] == np.shape(y_val)[0]:
-        #    raise Exception("""The length of X_val and y_val must be equal.""")
 
         if len(node_list) < 2:
             raise Exception("""node_list must contain at least 2 elements.""")
@@ -229,8 +223,6 @@ class NetworkWeights:
         self.bias = bias
         self.is_classifier = is_classifier
         self.lr = learning_rate
-        self.X_val = X_val
-        self.y_val = y_val
 
         # Determine appropriate loss function and output activation function
         if self.is_classifier:
@@ -551,7 +543,7 @@ class NeuralNetwork:
         self.fitness_curve = []
         self.validation_curve = []
 
-    def fit(self, X, y, val = None, init_weights=None):
+    def fit(self, X, y, val = [None, None], init_weights=None):
         """Fit neural network to data.
 
         Parameters
@@ -576,20 +568,20 @@ class NeuralNetwork:
         # Make sure y is an array and not a list
         y = np.array(y)
 
-        if not val == None:
-            X_val, y_val = val
-            # Convert y to 2D if necessary
-            if len(np.shape(y_val)) == 1:
-                y_val = np.reshape(y_val, [len(y_val), 1])
+        X_val = val[0]
+        y_val = val[1]
 
-            # Check that X_val and y_val are the same length
-            if not np.shape(X_val)[0] == np.shape(y_val)[0]:
-                raise Exception('The length of X_val and y_val must be equal.')
+        # Convert y to 2D if necessary
+        if len(np.shape(y_val)) == 1:
+            y_val = np.reshape(y_val, [len(y_val), 1])
 
-            # Check that X_val and X have same number of features
-            if not np.shape(X_val)[1] == np.shape(X)[1]:
-                raise Exception('The X and X_val must have the same number of features.')
+        # Check that X_val and y_val are the same length
+        if not np.shape(X_val)[0] == np.shape(y_val)[0]:
+            raise Exception('The length of X_val and y_val must be equal.')
 
+        # Check that X_val and X have same number of features
+        if not np.shape(X_val)[1] == np.shape(X)[1]:
+            raise Exception('The X and X_val must have the same number of features.')
 
         # Convert y to 2D if necessary
         if len(np.shape(y)) == 1:
@@ -615,7 +607,7 @@ class NeuralNetwork:
 
         # Initialize optimization problem
         fitness = NetworkWeights(X, y, node_list, self.activation, self.bias,
-                                 self.is_classifier, val=(None, None), learning_rate=self.lr)
+                                 self.is_classifier, val=[X_val, y_val] learning_rate=self.lr)
 
         problem = ContinuousOpt(num_nodes, fitness, maximize=False,
                                 min_val=-1*self.clip_max,
