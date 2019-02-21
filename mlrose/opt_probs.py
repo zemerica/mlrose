@@ -791,6 +791,7 @@ class ContinuousOpt(OptProb):
         """
         self.state = self.random()
         self.fitness = self.eval_fitness(self.state)
+        self.validation = self.eval_validation(self.state)
 
     def update_state(self, updates):
         """Update current state given a vector of updates.
