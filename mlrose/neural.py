@@ -199,8 +199,8 @@ class NetworkWeights:
         if not np.shape(X)[0] == np.shape(y)[0]:
             raise Exception("""The length of X and y must be equal.""")
 
-        if not np.shape(X_val)[0] == np.shape(y_val)[0]:
-            raise Exception("""The length of X_val and y_val must be equal.""")
+        #if not np.shape(X_val)[0] == np.shape(y_val)[0]:
+        #    raise Exception("""The length of X_val and y_val must be equal.""")
 
         if len(node_list) < 2:
             raise Exception("""node_list must contain at least 2 elements.""")
